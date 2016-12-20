@@ -4,6 +4,7 @@ defmodule PhoenixEcto.HTMLTest do
   import Ecto.Changeset
   import Phoenix.HTML
   import Phoenix.HTML.Form
+  import Phoenix.HTML.FormData
 
   defp safe_form_for(changeset, opts \\ [], function) do
     safe_to_string(form_for(changeset, "/", opts, function))
@@ -137,12 +138,13 @@ defmodule PhoenixEcto.HTMLTest do
 
   test "input value" do
     changeset =
-      %Custom{string: "string", integer: 321}
-      |> cast(%{}, ~w())
+      %Custom{decimal: 1.0, string: "string", integer: 321}
+      |> cast(%{integer: 233, decimal: 2.0}, ~w(integer decimal))
       |> put_change(:integer, 123)
 
     safe_form_for(changeset, fn f ->
       assert input_value(f, :integer) == 123
+      assert input_value(f, :decimal) == 2.0
       assert input_value(f, :string) == "string"
       assert input_value(f, :float) == nil
       ""
